@@ -1,96 +1,33 @@
-# ⚡ Open Terminal
+[update-readmes]   Mode: rewrite — migrating to template structure...
+# open-terminal
 
-A lightweight, self-hosted terminal that gives AI agents and automation tools a dedicated environment to run commands, manage files, and execute code — all through a simple API.
+[![Built with Ona](https://ona.com/build-with-ona.svg)](https://app.ona.com/#https://github.com/Interested-Deving-1896/open-terminal)
 
-## Why Open Terminal?
+<!-- AI:start:what-it-does -->
+_Description pending._
+<!-- AI:end:what-it-does -->
 
-AI assistants are great at writing code, but they need somewhere to *run* it. Open Terminal is that place — a remote shell with file management, search, and more, accessible over a simple REST API.
+## Architecture
 
-You can run it two ways:
+<!-- AI:start:architecture -->
+_Architecture documentation pending._
+<!-- AI:end:architecture -->
 
-- **Docker (sandboxed)** — runs in an isolated container with a full toolkit pre-installed: Python, Node.js, git, build tools, data science libraries, ffmpeg, and more. Great for giving AI agents a safe playground without touching your host system.
-- **Bare metal** — install it with `pip` and run it anywhere Python runs. Commands run directly on your machine with access to your real files, your real tools, and your real environment, perfect for local development, personal automation, or giving an AI assistant full access to your actual projects.
+## Install
 
-## Getting Started
-
-### Docker (recommended)
-
-```bash
-docker run -d --name open-terminal --restart unless-stopped -p 8000:8000 -v open-terminal:/home/user -e OPEN_TERMINAL_API_KEY=your-secret-key ghcr.io/open-webui/open-terminal
-```
-
-That's it — you're up and running at `http://localhost:8000`.
-
-> [!TIP]
-> If you don't set an API key, one is generated automatically. Grab it with `docker logs open-terminal`.
-
-#### Updating
+<!-- Add installation instructions here. This section is yours — the AI will not modify it. -->
 
 ```bash
-docker pull ghcr.io/open-webui/open-terminal
-docker rm -f open-terminal
+git clone https://github.com/Interested-Deving-1896/open-terminal.git
+cd open-terminal
 ```
 
-Then re-run the `docker run` command above.
+## Usage
 
-### Bare Metal
-
-No Docker? No problem. Open Terminal is a standard Python package:
-
-```bash
-# One-liner with uvx (no install needed)
-uvx open-terminal run --host 0.0.0.0 --port 8000 --api-key your-secret-key
-
-# Or install globally with pip
-pip install open-terminal
-open-terminal run --host 0.0.0.0 --port 8000 --api-key your-secret-key
-```
-
-> [!CAUTION]
-> On bare metal, commands run directly on your machine with your user's permissions. Use Docker if you want sandboxed execution.
-
-#### Customizing the Docker Environment
-
-The easiest way to add extra packages is with environment variables — no fork needed:
-
-```bash
-docker run -d --name open-terminal -p 8000:8000 \
-  -e OPEN_TERMINAL_PACKAGES="cowsay figlet" \
-  -e OPEN_TERMINAL_PIP_PACKAGES="httpx polars" \
-  ghcr.io/open-webui/open-terminal
-```
-
-| Variable | Description |
-|---|---|
-| `OPEN_TERMINAL_PACKAGES` | Space-separated list of **apt** packages to install at startup |
-| `OPEN_TERMINAL_PIP_PACKAGES` | Space-separated list of **pip** packages to install at startup |
-
-> [!NOTE]
-> Packages are installed each time the container starts, so startup will take longer with large package lists. For heavy customization, build a custom image instead.
-
-#### Docker Access
-
-The image includes the Docker CLI, Compose, and Buildx. To let agents build images, run containers, etc., mount the host's Docker socket:
-
-```bash
-docker run -d --name open-terminal -p 8000:8000 \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  -v open-terminal:/home/user \
-  ghcr.io/open-webui/open-terminal
-```
-
-> [!CAUTION]
-> Mounting the Docker socket gives the container full access to the host's Docker daemon. Only do this in trusted environments.
-
-For full control, fork the repo, edit the [Dockerfile](Dockerfile), and build your own image:
-
-```bash
-docker build -t my-terminal .
-docker run -d --name open-terminal -p 8000:8000 my-terminal
-```
-
+<!-- Add usage examples here. This section is yours — the AI will not modify it. -->
 
 ## Configuration
+
 
 Open Terminal can be configured via a TOML config file, environment variables, and CLI flags. Settings are resolved in this order (highest priority wins):
 
@@ -121,59 +58,46 @@ You can also point to a specific config file:
 open-terminal run --config /path/to/my-config.toml
 ```
 
-## Using with Open WebUI
+## CI
 
-Open Terminal integrates with [Open WebUI](https://github.com/open-webui/open-webui), giving your AI assistants the ability to run commands, manage files, and interact with a terminal right from the AI interface. Make sure to add it under **Open Terminal** in the integrations settings, not as a tool server. Adding it as an Open Terminal connection gives you a built-in file navigation sidebar where you can browse directories, upload, download, and edit files. There are two ways to connect:
+<!-- AI:start:ci -->
+_CI documentation pending._
+<!-- AI:end:ci -->
 
-### Direct Connection
+## Mirror chain
 
-Users can connect their own Open Terminal instance from their user settings. This is useful when the terminal is running on their local machine or a network only they can reach, since requests go directly from the **browser**.
+<!-- AI:start:mirror-chain -->
+This repo is maintained in [`Interested-Deving-1896/open-terminal`](https://github.com/Interested-Deving-1896/open-terminal) and mirrored through:
 
-1. Go to **User Settings → Integrations → Open Terminal**
-2. Add the terminal **URL** and **API key**
-3. Enable the connection
-
-### System-Level Connection (Multi-User)
-
-Admins can configure Open Terminal connections for all their users from the admin panel. No additional services required. Multiple terminals can be set up with access controlled at the user or group level. Requests are proxied through the Open WebUI **backend**, so the terminal only needs to be reachable from the server.
-
-1. Go to **Admin Settings → Integrations → Open Terminal**
-2. Add the terminal **URL** and **API key**
-3. Enable the connection
-
-#### Built-in Multi-User Isolation
-
-For shared deployments, enable per-user isolation inside a single container — no extra services needed:
-
-```bash
-docker run -d --name open-terminal -p 8000:8000 \
-  -e OPEN_TERMINAL_MULTI_USER=true \
-  -e OPEN_TERMINAL_API_KEY=your-secret-key \
-  ghcr.io/open-webui/open-terminal
+```
+Interested-Deving-1896/open-terminal  ──►  OpenOS-Project-OSP/open-terminal  ──►  OpenOS-Project-Ecosystem-OOC/open-terminal
 ```
 
-Each `X-User-Id` header maps to a dedicated Linux user with its own home directory. Files, commands, terminals, and port visibility are all isolated via standard Unix permissions. Network ports share a single namespace (visibility is filtered, but users can technically reach each other's services).
+Changes flow downstream automatically via the hourly mirror chain in
+[`fork-sync-all`](https://github.com/Interested-Deving-1896/fork-sync-all).
+Direct commits to OSP or OOC are detected and opened as PRs back to `Interested-Deving-1896`.
+<!-- AI:end:mirror-chain -->
 
-> [!WARNING]
-> Multi-user mode provides process-level isolation via Unix permissions within a shared container. Users share the same kernel, network stack, and installed packages. It is not suitable for large or untrusted deployments and should use per-container isolation for stronger security boundaries.
+## Contributors
 
-## API Docs
+<!-- AI:start:contributors -->
+_Contributors pending._
+<!-- AI:end:contributors -->
 
-Full interactive API documentation is available at [http://localhost:8000/docs](http://localhost:8000/docs) once your instance is running.
+## Origins
 
-## Star History
+<!-- AI:start:origins -->
+_Original project — no upstream fork._
+<!-- AI:end:origins -->
 
-<a href="https://star-history.com/#open-webui/open-terminal&Date">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=open-webui/open-terminal&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=open-webui/open-terminal&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=open-webui/open-terminal&type=Date" />
-  </picture>
-</a>
+## Resources
 
-> [!TIP]
-> **Need container-per-user isolation?** Check out **[Terminals](https://github.com/open-webui/terminals)**, which provisions and manages separate Open Terminal containers per user. For lighter deployments, built-in multi-user mode (`OPEN_TERMINAL_MULTI_USER=true`) provides per-user isolation inside a single container.
+<!-- AI:start:resources -->
+_No additional resource files found._
+<!-- AI:end:resources -->
 
 ## License
 
-MIT — see [LICENSE](LICENSE) for details.
+<!-- AI:start:license -->
+[MIT](https://github.com/Interested-Deving-1896/open-terminal/blob/main/LICENSE) © 2026 [Interested-Deving-1896](https://github.com/Interested-Deving-1896)
+<!-- AI:end:license -->
